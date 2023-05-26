@@ -1,0 +1,71 @@
+version: '3'
+services:
+  network-client:
+    image: network-automation-network-client:latest
+    container_name: network-client
+    ports:
+      - 3000:3000
+    depends_on:
+      - network-server
+    networks:
+      - mynetwork
+
+  network-server:
+    image: network-automation-network-server:latest
+    container_name: network-server
+    ports:
+      - 5001:5001
+    networks:
+      - mynetwork
+
+  network-tftp-server:
+    image: network-automation-network-tftp-server:latest
+    container_name: network-tftp-server
+    ports:
+      - 4000:4000
+    networks:
+      - mynetwork
+
+  network-socket:
+    image: network-automation-network-socket:latest
+    container_name: network-socket
+    ports:
+      - 5000:5000
+    networks:
+      - mynetwork
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27015:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tahaakgungor
+      - MONGO_INITDB_ROOT_PASSWORD=36987412tT
+    volumes:
+      - db-data:/data/db
+    networks:
+      - mynetwork
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=tahaakgungor
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=36987412tT
+    depends_on:
+      - mongodb
+    networks:
+      - mynetwork
+
+volumes:
+  db-data:
+
+networks:
+  mynetwork:
